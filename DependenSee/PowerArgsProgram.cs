@@ -81,6 +81,8 @@ public class PowerArgsProgram
 
     public void Main()
     {
+        // required to support more exotic encoding like Windows-1252
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         var service = new ReferenceDiscoveryService
         {
             ExcludePackageNamespaces = ExcludePackageNamespaces,
