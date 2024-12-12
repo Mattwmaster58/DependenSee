@@ -138,14 +138,22 @@ public class ReferenceDiscoveryService
 
     private (List<Project> projects, List<Package> packages) DiscoverFileReferences(string path)
     {
-        var xml = new XmlDocument();
-        xml.Load(path);
+        List<Project> projects = new List<Project> { };
+        List<Package> packages = null;
         var basePath = new FileInfo(path).Directory.FullName;
-
-        var projects = DiscoverProjectRefrences(xml, basePath);
-        var packages = _shouldIncludePackages
-            ? DiscoverPackageReferences(xml)
-            : null;
+        var xml = new XmlDocument();
+        try
+        {
+            xml.Load(path);
+            projects = DiscoverProjectRefrences(xml, basePath);
+            packages = _shouldIncludePackages
+                ? DiscoverPackageReferences(xml)
+                : null;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Failed to load XML {basePath}: {ex.Message}");
+        }
 
         return (projects, packages);
     }
